@@ -1,0 +1,36 @@
+
+name: Integração Contínua
+
+on:
+  push:
+    branches:
+      - main
+      - revisao-tecnica-mvp
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  testes:
+    name: Build e testes automatizados
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-cov
+
+      - name: Executar testes
+        run: |
+          python -m pytest --cov=app --cov-report=term-missing -v
